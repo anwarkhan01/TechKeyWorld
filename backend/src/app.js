@@ -14,9 +14,12 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
+
+app.use(
+  cors({
     origin: [process.env.FRONTEND_URL, process.env.ADMIN_URL],
-}))
+  })
+);
 // Body parser with size limit
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -48,50 +51,51 @@ app.use("/api/admin", adminRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/payment", paymentRouter);
 app.use("/", (req, res, next) => {
-    next(
-        new ApiError(
-            404,
-            `Route not found: [${req.method}] ${req.originalUrl}. Please check if the endpoint exists or if there is a typo in the URL.`,
-        )
-    );
+  next(
+    new ApiError(
+      404,
+      `Route not found: [${req.method}] ${req.originalUrl}. Please check if the endpoint exists or if there is a typo in the URL.`
+    )
+  );
 });
 
 function cleanStack(stack) {
-    if (!stack) return undefined;
-    return stack
-        .split("\n")
-        .filter(line => line.includes("/src/"))
-        .map(line => {
-            const match = line.match(/at\s+(?:.*?)([^\/]+\/src\/.+?:\d+:\d+)/);
-            return match ? match[1] : line.trim();
-        })
-        .filter(Boolean)
-        .join("\n");
+  if (!stack) return undefined;
+  return stack
+    .split("\n")
+    .filter((line) => line.includes("/src/"))
+    .map((line) => {
+      const match = line.match(/at\s+(?:.*?)([^\/]+\/src\/.+?:\d+:\d+)/);
+      return match ? match[1] : line.trim();
+    })
+    .filter(Boolean)
+    .join("\n");
 }
 
 app.use((err, req, res, next) => {
-    console.error("Error:", err);
-    const stack = process.env.NODE_ENV === "development" ? cleanStack(err.stack) : undefined;
-    if (err instanceof ApiError) {
-        return res.status(err.statusCode).json({
-            success: err.success,
-            message: err.message,
-            errors: err.errors,
-            stack: stack,
-        });
-    }
-
-    const apiError = new ApiError(
-        500,
-        err.message || "Internal Server Error",
-        [],
-        stack
-    );
-
-    return res.status(500).json({
-        success: apiError.success,
-        message: apiError.message,
-        stack: stack,
+  console.error("Error:", err);
+  const stack =
+    process.env.NODE_ENV === "development" ? cleanStack(err.stack) : undefined;
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      success: err.success,
+      message: err.message,
+      errors: err.errors,
+      stack: stack,
     });
+  }
+
+  const apiError = new ApiError(
+    500,
+    err.message || "Internal Server Error",
+    [],
+    stack
+  );
+
+  return res.status(500).json({
+    success: apiError.success,
+    message: apiError.message,
+    stack: stack,
+  });
 });
 export default app;

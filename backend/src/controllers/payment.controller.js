@@ -11,7 +11,7 @@ import {
 const cache = new Map();
 
 const startPayU = asyncHandler(async (req, res) => {
-  const { productData } = req.body;
+  const { productData, contact } = req.body;
   const { email, uid } = req.user;
 
   if (!productData) {
@@ -21,19 +21,20 @@ const startPayU = asyncHandler(async (req, res) => {
   const txnid = "PAYU_" + Math.floor(Math.random() * 45825666);
   const ref = crypto.randomBytes(8).toString("hex");
 
-  cache.set(ref, { productData, uid });
+  cache.set(ref, { productData, uid, contact });
 
-  // Auto-delete cached data after 20 minutes
   setTimeout(() => cache.delete(ref), 20 * 60 * 1000);
 
   const paymentData = await CreateTransaction({
     txnid,
     amount: productData.totalPrice,
     productInfo: `Order for ${productData.products.length} items`,
-    firstName: email.split("@")[0],
+    firstName: contact.name,
     email,
-    phone: "9999999999",
+    phone: contact.phone,
     udf1: ref,
+    udf2: contact.phone,
+    udf3: contact.name,
   });
 
   const nonce = randomBytes(16).toString("base64");
@@ -73,20 +74,25 @@ const payuSuccess = asyncHandler(async (req, res) => {
   const existing = await Order.findOne({ txnId: info.txnid });
   if (existing) {
     // User pressed back or PayU retried callback
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/cart?alreadyPaid=true`
-    );
+    return res.redirect(`${process.env.FRONTEND_URL}/cart?alreadyPaid=true`);
   }
-  x``
-  const { productData, uid } = cached;
-  const orderId = crypto.randomBytes(12).toString("hex").substring(0, 20).toUpperCase();
+
+  const { productData, uid, contact } = cached;
+  const orderId = crypto
+    .randomBytes(12)
+    .toString("hex")
+    .substring(0, 20)
+    .toUpperCase();
 
   const order = await Order.create({
     firebaseUid: uid,
     useremail: email,
+    username: info.udf3,
     productData,
+    billingAddress: contact,
     paymentMethod: info.mode?.toLowerCase() || "upi",
     orderId,
+    phone: info.udf2,
     paymentId: info.mihpayid,
     txnId: info.txnid,
     status: "processing",
@@ -106,13 +112,13 @@ const payuSuccess = asyncHandler(async (req, res) => {
     console.error("Admin email failed:", err);
   }
 
-  return res.redirect(`${process.env.FRONTEND_URL}/orders/${order.orderId}?paymentSuccess=true`);
-
+  return res.redirect(
+    `${process.env.FRONTEND_URL}/orders/${order.orderId}?paymentSuccess=true`
+  );
 });
 
 const payuFailure = asyncHandler(async (req, res) => {
   return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
 });
-
 
 export { startPayU, payuSuccess, payuFailure };

@@ -271,7 +271,7 @@ const CheckoutPage = () => {
         totalPrice,
         products: productsList,
       },
-      shipping: {
+      contact: {
         name: formData.name,
         phone: formData.phone,
         address: formData.address,

@@ -55,11 +55,10 @@ export const OrderProvider = ({children}) => {
 
     setIsOrderProcessing(true);
     try {
-      const payload = {
-        productData: paymentData.productData,
-        shipping: paymentData.shipping,
-      };
-
+      // const payload = {
+      //   productData: paymentData.productData,
+      //   contact: paymentData.contact,
+      // };
       const token = await user.getIdToken();
       const resp = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/api/payment/start-payu`,
@@ -69,7 +68,7 @@ export const OrderProvider = ({children}) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(paymentData),
         }
       );
 

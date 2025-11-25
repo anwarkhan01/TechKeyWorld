@@ -1,17 +1,15 @@
 // utils/orderEmailService.js
 import nodemailer from "nodemailer";
 
-console.log(process.env.SMTP_HOST, process.env.SMTP_USER, process.env.SMTP_PASS);
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT || 587),
   secure: process.env.SMTP_SECURE === "true",
   auth: {
     user: process.env.SMTP_USER || "anwarkhan84088@gmail.com",
-    pass: process.env.SMTP_PASS || "afibfdqvntqvntqvntqvnt",
+    pass: process.env.SMTP_PASS || "hgujrgvxzmlmucjys",
   },
 });
-
 
 export const sendUserOrderConfirmationEmail = async (userEmail, order) => {
   const itemsHtml = order.productData.products
@@ -19,9 +17,15 @@ export const sendUserOrderConfirmationEmail = async (userEmail, order) => {
       (p) => `
       <tr>
         <td style="padding:8px;border:1px solid #eee;">${p.product_name}</td>
-        <td style="padding:8px;text-align:center;border:1px solid #eee;">${p.quantity}</td>
-        <td style="padding:8px;text-align:right;border:1px solid #eee;">₹${p.product_price}</td>
-        <td style="padding:8px;text-align:right;border:1px solid #eee;">₹${p.product_price * p.quantity}</td>
+        <td style="padding:8px;text-align:center;border:1px solid #eee;">${
+          p.quantity
+        }</td>
+        <td style="padding:8px;text-align:right;border:1px solid #eee;">₹${
+          p.product_price
+        }</td>
+        <td style="padding:8px;text-align:right;border:1px solid #eee;">₹${
+          p.product_price * p.quantity
+        }</td>
       </tr>
     `
     )
@@ -60,7 +64,9 @@ export const sendUserOrderConfirmationEmail = async (userEmail, order) => {
       </table>
 
       <p style="margin-top:12px;font-size:16px;">
-        <strong>Grand Total:</strong> ₹${order.productData.totalPrice.toLocaleString("en-IN")}
+        <strong>Grand Total:</strong> ₹${order.productData.totalPrice.toLocaleString(
+          "en-IN"
+        )}
       </p>
 
       <br/>
@@ -69,7 +75,6 @@ export const sendUserOrderConfirmationEmail = async (userEmail, order) => {
     </div>
   `;
 
-  console.log("user email", process.env.SMTP_USER)
   await transporter.sendMail({
     from: process.env.SMTP_USER,
     to: userEmail,
@@ -91,10 +96,15 @@ export const sendAdminOrderNotificationEmail = async (order) => {
         <tr>
           <td style="padding:6px;border:1px solid #eee;">${p.product_name}</td>
           <td style="padding:6px;border:1px solid #eee;">${p.product_id}</td>
-          <td style="padding:6px;text-align:center;border:1px solid #eee;">${p.quantity}</td>
-          <td style="padding:6px;text-align:right;border:1px solid #eee;">₹${p.product_price}</td>
-          <td style="padding:6px;text-align:right;border:1px solid #eee;">₹${p.product_price * p.quantity
-        }</td>
+          <td style="padding:6px;text-align:center;border:1px solid #eee;">${
+            p.quantity
+          }</td>
+          <td style="padding:6px;text-align:right;border:1px solid #eee;">₹${
+            p.product_price
+          }</td>
+          <td style="padding:6px;text-align:right;border:1px solid #eee;">₹${
+            p.product_price * p.quantity
+          }</td>
         </tr>
       `
     )
@@ -104,15 +114,17 @@ export const sendAdminOrderNotificationEmail = async (order) => {
     <div style="font-family:Arial, sans-serif;line-height:1.6;">
       <h2>📦 New Order Received</h2>
       <h3>Order ID: ${order.orderId}</h3>
-
       <p><strong>User Email:</strong> ${order.useremail}</p>
+      <p><strong>User Name:</strong> ${order.username}</p>
+      <p><strong>User Phone:</strong> ${order.phone}</p>
       <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
       <p><strong>PayU Payment ID:</strong> ${order.paymentId}</p>
       <p><strong>PayU Txn ID:</strong> ${order.txnId}</p>
       <p><strong>Payment Status:</strong> Paid (SUCCESS)</p>
 
-      <p><strong>Order Date:</strong> ${new Date(order.meta?.createdAt).toLocaleString("en-IN") || "N/A"
-    }</p>
+      <p><strong>Order Date:</strong> ${
+        new Date(order.meta?.createdAt).toLocaleString("en-IN") || "N/A"
+      }</p>
 
       <hr style="margin:20px 0"/>
 
@@ -141,7 +153,9 @@ export const sendAdminOrderNotificationEmail = async (order) => {
 
       <p><strong>ACTION REQUIRED:</strong></p>
       <p>✔ Verify PayU payment in merchant dashboard.</p>
-      <p>✔ Generate & send product keys to <strong>${order.useremail}</strong>.</p>
+      <p>✔ Generate & send product keys to <strong>${
+        order.useremail
+      }</strong>.</p>
     </div>
   `;
 
@@ -152,4 +166,3 @@ export const sendAdminOrderNotificationEmail = async (order) => {
     html,
   });
 };
-
