@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useMemo} from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ShoppingCart,
   MapPin,
@@ -11,17 +11,17 @@ import {
   Store,
 } from "lucide-react";
 import Toast from "../components/Toast.jsx";
-import {useCart} from "../contexts/CartContext";
-import {useAuth} from "../contexts/AuthContext.jsx";
-import {useProducts} from "../contexts/ProductsContext.jsx";
-import {useOrder} from "../contexts/OrderContext.jsx";
+import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext.jsx";
+import { useProducts } from "../contexts/ProductsContext.jsx";
+import { useOrder } from "../contexts/OrderContext.jsx";
 
 const CheckoutPage = () => {
-  const {cartItems, clearCart} = useCart();
-  const {user, mongoUser} = useAuth();
-  const {initiatePayment, createOrder, isOrderProcessing} = useOrder();
-  const {products} = useProducts();
-  const {state} = useLocation();
+  const { cartItems, clearCart } = useCart();
+  const { user, mongoUser } = useAuth();
+  const { initiatePayment, createOrder, isOrderProcessing } = useOrder();
+  const { products } = useProducts();
+  const { state } = useLocation();
   const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
   const [toastData, setToastData] = useState({});
@@ -32,7 +32,7 @@ const CheckoutPage = () => {
     if (!buyNowItemId) return null;
     const p = products.find((p) => p.product_id === buyNowItemId);
     if (!p) return null;
-    return {...p, quantity: buyNowQuantity}; // ensure quantity exists for buy-now flow
+    return { ...p, quantity: buyNowQuantity }; // ensure quantity exists for buy-now flow
   }, [buyNowItemId, products, buyNowQuantity]);
 
   const itemsToCheckout = buyNowItem ? [buyNowItem] : cartItems;
@@ -83,8 +83,7 @@ const CheckoutPage = () => {
     0
   );
   const tax = Math.round(subtotal * 0.18);
-  const deliveryCharge = subtotal > 50000 ? 0 : 500;
-  const total = subtotal + tax + deliveryCharge;
+  const total = subtotal + tax;
 
   const validatePhone = (phoneNumber) => {
     const digitsOnly = (phoneNumber || "").replace(/\D/g, "");
@@ -105,23 +104,23 @@ const CheckoutPage = () => {
   };
 
   const handleInputChange = (e) => {
-    const {name, value} = e.target;
+    const { name, value } = e.target;
 
     if (name === "phone") {
       const phoneValue = value.replace(/\D/g, "").slice(0, 10);
-      setFormData((prev) => ({...prev, [name]: phoneValue}));
+      setFormData((prev) => ({ ...prev, [name]: phoneValue }));
       if (phoneValue) validatePhone(phoneValue);
       else setPhoneError("");
     } else if (name === "pincode") {
       const pincodeValue = value.replace(/\D/g, "").slice(0, 6);
-      setFormData((prev) => ({...prev, [name]: pincodeValue}));
+      setFormData((prev) => ({ ...prev, [name]: pincodeValue }));
     } else if (name === "paymentMethod") {
-      setFormData((prev) => ({...prev, [name]: value}));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     } else {
-      setFormData((prev) => ({...prev, [name]: value}));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
 
-    if (errors[name]) setErrors((prev) => ({...prev, [name]: ""}));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   const handleContactSave = async () => {
@@ -137,7 +136,7 @@ const CheckoutPage = () => {
       contactErrors.phone = phoneError || "Invalid phone number";
 
     if (Object.keys(contactErrors).length > 0) {
-      setErrors((prev) => ({...prev, ...contactErrors}));
+      setErrors((prev) => ({ ...prev, ...contactErrors }));
       return;
     }
 
@@ -152,7 +151,7 @@ const CheckoutPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({phone: formData.phone}),
+          body: JSON.stringify({ phone: formData.phone }),
         }
       );
 
@@ -204,7 +203,7 @@ const CheckoutPage = () => {
       addressErrors.pincode = "Enter a valid 6-digit pincode";
 
     if (Object.keys(addressErrors).length > 0) {
-      setErrors((prev) => ({...prev, ...addressErrors}));
+      setErrors((prev) => ({ ...prev, ...addressErrors }));
       return;
     }
 
@@ -262,9 +261,8 @@ const CheckoutPage = () => {
     );
 
     const tax = Math.round(subtotal * 0.18);
-    const deliveryCharge = subtotal > 50000 ? 0 : 500;
 
-    const totalPrice = subtotal + tax + deliveryCharge;
+    const totalPrice = subtotal + tax;
 
     return {
       productData: {
@@ -342,7 +340,7 @@ const CheckoutPage = () => {
                   </p>
                   <button
                     onClick={() =>
-                      navigate("/auth/login", {state: {page: "/checkout"}})
+                      navigate("/auth/login", { state: { page: "/checkout" } })
                     }
                     className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm sm:text-base font-medium"
                   >
@@ -419,7 +417,7 @@ const CheckoutPage = () => {
                               }));
                               setIsEditingPhone(false);
                               setPhoneError("");
-                              setErrors((prev) => ({...prev, phone: ""}));
+                              setErrors((prev) => ({ ...prev, phone: "" }));
                             }}
                             className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
                           >
@@ -443,12 +441,12 @@ const CheckoutPage = () => {
               )}
             </div>
 
-            {/* Delivery Address */}
+            {/* Billing Address */}
             <div className="bg-white rounded-lg shadow p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
                   <MapPin className="w-5 h-5 mr-2" />
-                  Delivery Address
+                  Billing Address
                 </h2>
                 {!isEditingAddress && (
                   <button
@@ -642,7 +640,36 @@ const CheckoutPage = () => {
           {/* Right Column - Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow p-4 sm:p-6 lg:sticky lg:top-20">
-              <div className="pt-4 space-y-2">
+              {/* Order Details */}
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  ORDER SUMMARY
+                </h3>
+
+                <div className="space-y-3">
+                  {itemsToCheckout.map((item) => (
+                    <div
+                      key={item.product_id}
+                      className="flex justify-between items-start"
+                    >
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-900 text-sm sm:text-base">
+                          {item.product_name}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Qty: {item.quantity} × ₹{item.price}
+                        </span>
+                      </div>
+
+                      <span className="font-medium text-gray-900 text-sm sm:text-base">
+                        ₹{(item.quantity * item.price).toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="text-gray-900">
@@ -655,24 +682,7 @@ const CheckoutPage = () => {
                     ₹{tax.toLocaleString("en-IN")}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Delivery Charges</span>
-                  <span
-                    className={
-                      deliveryCharge === 0
-                        ? "text-green-600 font-medium"
-                        : "text-gray-900"
-                    }
-                  >
-                    {deliveryCharge === 0 ? 0 : `₹${deliveryCharge}`}
-                  </span>
-                </div>
-                {/* {deliveryCharge === 0 && (
-                  <p className="text-xs text-green-600">
-                    Free delivery on orders above ₹50,000
-                  </p>
-                )} */}
-              </div>
+              </div> */}
 
               <div className="border-t mt-4 pt-4">
                 <div className="flex justify-between items-center">
@@ -680,7 +690,8 @@ const CheckoutPage = () => {
                     Total
                   </span>
                   <span className="text-xl sm:text-2xl font-bold text-gray-900">
-                    ₹{total.toLocaleString("en-IN")}
+                    {/* ₹{total.toLocaleString("en-IN")} */}₹
+                    {subtotal.toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>

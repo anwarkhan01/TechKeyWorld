@@ -1,9 +1,9 @@
-import React, {useEffect, useState, useRef} from "react";
-import {Link} from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import OrderModal from "../components/OrderModal";
-import {API_BASE} from "../utils/api";
-import {ArrowDown} from "lucide-react";
+import { API_BASE } from "../utils/api";
+import { ArrowDown } from "lucide-react";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -26,7 +26,7 @@ const Orders = () => {
             ? `${API_BASE}/orders?page=${currentPage}&limit=10`
             : `${API_BASE}/orders/status/${filterStatus}`;
 
-        const res = await fetch(url, {signal: controller.signal});
+        const res = await fetch(url, { signal: controller.signal });
         const data = await res.json();
         const payload = data?.data || {};
 
@@ -49,14 +49,14 @@ const Orders = () => {
     try {
       await fetch(`${API_BASE}/orders/${orderId}/status`, {
         method: "PATCH",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({status}),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
       });
 
       setOrders((prev) =>
         prev.map((order) =>
           order.orderId === orderId
-            ? {...order, status, menuOpen: false}
+            ? { ...order, status, menuOpen: false }
             : order
         )
       );
@@ -77,7 +77,7 @@ const Orders = () => {
 
       if (!clickedInside) {
         setOrders((prev) =>
-          prev.map((o) => (o.menuOpen ? {...o, menuOpen: false} : o))
+          prev.map((o) => (o.menuOpen ? { ...o, menuOpen: false } : o))
         );
       }
     }
@@ -106,11 +106,8 @@ const Orders = () => {
           className="w-full md:w-60 rounded-xl border border-gray-200 px-4 py-2.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         >
           <option value="all">All status</option>
-          <option value="pending">Pending</option>
           <option value="processing">Processing</option>
-          <option value="shipped">Shipped</option>
           <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
         </select>
       </div>
 
@@ -120,7 +117,8 @@ const Orders = () => {
           <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
             <tr>
               <th className="px-6 py-3 text-left">Order ID</th>
-              <th className="px-6 py-3 text-left">Customer</th>
+              <th className="px-6 py-3 text-left">User Email</th>
+              <th className="px-6 py-3 text-left">User Name</th>
               <th className="px-6 py-3 text-left">Total</th>
               <th className="px-6 py-3 text-left">Status / Actions</th>
             </tr>
@@ -150,6 +148,7 @@ const Orders = () => {
                     <td className="px-6 py-4 font-semibold">{order.orderId}</td>
 
                     <td className="px-6 py-4">{order.useremail || "N/A"}</td>
+                    <td className="px-6 py-4">{order.username || "N/A"}</td>
 
                     <td className="px-6 py-4 font-medium">
                       ₹{order.productData?.totalPrice?.toFixed(2) || 0}
@@ -168,8 +167,8 @@ const Orders = () => {
                               setOrders((prev) =>
                                 prev.map((o) =>
                                   o._id === order._id
-                                    ? {...o, menuOpen: !o.menuOpen}
-                                    : {...o, menuOpen: false}
+                                    ? { ...o, menuOpen: !o.menuOpen }
+                                    : { ...o, menuOpen: false }
                                 )
                               )
                             }
@@ -177,15 +176,9 @@ const Orders = () => {
                               flex items-center justify-between px-4 py-1.5 rounded-full 
                               text-xs font-semibold capitalize border shadow-sm w-30
                               ${
-                                order.status === "pending"
-                                  ? "bg-yellow-50 text-yellow-700 border-yellow-300"
-                                  : order.status === "processing"
+                                order.status === "processing"
                                   ? "bg-blue-50 text-blue-700 border-blue-300"
-                                  : order.status === "shipped"
-                                  ? "bg-purple-50 text-purple-700 border-purple-300"
-                                  : order.status === "delivered"
-                                  ? "bg-green-50 text-green-700 border-green-300"
-                                  : "bg-red-50 text-red-700 border-red-300"
+                                  : "bg-green-50 text-green-700 border-green-300"
                               }
                             `}
                           >
@@ -210,13 +203,7 @@ const Orders = () => {
                                 }
                               `}
                             >
-                              {[
-                                "pending",
-                                "processing",
-                                "shipped",
-                                "delivered",
-                                "cancelled",
-                              ].map((s) => (
+                              {["processing", "delivered"].map((s) => (
                                 <button
                                   key={s}
                                   onClick={() =>

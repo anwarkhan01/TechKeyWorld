@@ -1,16 +1,16 @@
-import {useMemo, useState, useEffect} from "react";
-import {useParams} from "react-router-dom";
-import {ShoppingCart, CreditCard} from "lucide-react";
-import {useProducts} from "../contexts/ProductsContext.jsx";
-import {useCart} from "../contexts/CartContext.jsx";
-import {useNavigate} from "react-router-dom";
-import {useAuth} from "../contexts/AuthContext.jsx";
+import { useMemo, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { ShoppingCart, CreditCard } from "lucide-react";
+import { useProducts } from "../contexts/ProductsContext.jsx";
+import { useCart } from "../contexts/CartContext.jsx";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 export default function ProductDetail() {
-  const {products, loading, getProductsByIds} = useProducts();
-  const {user} = useAuth();
-  const {id} = useParams();
-  const {addToCart} = useCart();
+  const { products, loading, getProductsByIds } = useProducts();
+  const { user } = useAuth();
+  const { id } = useParams();
+  const { addToCart } = useCart();
   const navigate = useNavigate();
   const product = useMemo(
     () => products.find((p) => p.product_id === id),
@@ -39,7 +39,7 @@ export default function ProductDetail() {
   const images = product.images?.length ? product.images : [product.image];
 
   const handleBuyNow = (productID) => {
-    navigate("/checkout", {state: {buyNowItemId: productID}});
+    navigate("/checkout", { state: { buyNowItemId: productID } });
   };
 
   return (
@@ -63,13 +63,6 @@ export default function ProductDetail() {
                     "https://placehold.co/600x400?text=Image+Not+Found";
                 }}
               />
-
-              {/* Category badge */}
-              {product.category && (
-                <span className="absolute top-4 left-4 bg-white px-3 py-1 text-xs font-semibold rounded-full shadow uppercase">
-                  {product.category}
-                </span>
-              )}
             </div>
 
             {/* Buttons */}
@@ -113,7 +106,7 @@ export default function ProductDetail() {
             )}
           </div>
 
-          {/* RIGHT SECTION — SCROLLABLE CONTENT */}
+          {/* RIGHT SECTION */}
           <div className="flex flex-col gap-6 pb-20">
             {/* Name + Price */}
             <div>
@@ -162,21 +155,45 @@ export default function ProductDetail() {
                 <span className="font-semibold">Platform:</span>{" "}
                 {product.platform}
               </p>
+
               <p>
                 <span className="font-semibold">License:</span>{" "}
                 {product.license_type}
               </p>
+
               <p>
                 <span className="font-semibold">Devices:</span>{" "}
                 {product.device_limit}
               </p>
+
               {product.version && (
                 <p>
                   <span className="font-semibold">Version:</span>{" "}
                   {product.version}
                 </p>
               )}
+
+              {/* Show duration only for subscription */}
+              {product.license_type?.toLowerCase() === "subscription" &&
+                product.duration && (
+                  <p>
+                    <span className="font-semibold">Duration:</span>{" "}
+                    {product.duration}
+                  </p>
+                )}
             </div>
+
+            {/* Features */}
+            {product.features?.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Key Features</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                  {product.features.map((f, i) => (
+                    <li key={i}>{f}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* System Requirements */}
             {product.system_requirements?.length > 0 && (
@@ -201,18 +218,6 @@ export default function ProductDetail() {
                     <li key={i}>{step}</li>
                   ))}
                 </ol>
-              </div>
-            )}
-
-            {/* Features */}
-            {product.features?.length > 0 && (
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Key Features</h3>
-                <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
-                  {product.features.map((f, i) => (
-                    <li key={i}>{f}</li>
-                  ))}
-                </ul>
               </div>
             )}
 

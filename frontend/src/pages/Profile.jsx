@@ -334,7 +334,7 @@ const Profile = () => {
               <div className="flex items-center gap-2 text-gray-700">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                 <span className="text-xs sm:text-sm font-medium">
-                  Delivery Address
+                  Billing Address
                 </span>
               </div>
               {!isEditingAddress && (

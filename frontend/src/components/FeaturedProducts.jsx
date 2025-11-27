@@ -1,9 +1,8 @@
-import {Link} from "react-router-dom";
 import ProductCard from "./ProductCard.jsx";
 import RevealSection from "./revealSection.jsx";
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
-function FeaturedProducts({title = "Featured Products", subtitle, items = []}) {
+function FeaturedProducts({ title = "Featured Products", subtitle }) {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -13,7 +12,6 @@ function FeaturedProducts({title = "Featured Products", subtitle, items = []}) {
           `${import.meta.env.VITE_BACKEND_URL}/api/products/get-random-products`
         );
         const data = await response.json();
-        console.log(data);
         setProducts(data.data.products || []);
       } catch (error) {
         console.error("Error fetching featured products:", error);

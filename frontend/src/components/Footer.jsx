@@ -6,8 +6,15 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 py-10 grid gap-8 md:grid-cols-4">
         {/* Brand / About */}
         <div>
-          <h2 className="text-xl font-semibold text-white mb-3">ITWorld</h2>
-          <p className="text-sm leading-relaxed text-gray-400">
+          {/* <span className="inline-flex items-center mb-3"> */}
+          <img
+            src="/Techkey_logo(croped).png"
+            alt="TeckKey"
+            className="w-25 h-auto object-contain"
+          />
+          {/* </span> */}
+
+          <p className="text-sm leading-relaxed text-gray-400 mt-3">
             Your trusted store for the latest electronics, gadgets, and
             accessories. Quality and innovation delivered to your door.
           </p>
@@ -62,7 +69,7 @@ const Footer = () => {
       {/* Bottom bar */}
       <div className="border-t border-gray-800 mt-8">
         <p className="text-center text-gray-500 text-sm py-4">
-          &copy; {new Date().getFullYear()} ITWorld. All rights reserved.
+          &copy; {new Date().getFullYear()} TechKey World. All rights reserved.
         </p>
       </div>
     </footer>

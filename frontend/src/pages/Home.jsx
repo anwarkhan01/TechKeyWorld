@@ -1,11 +1,11 @@
 import React from "react";
 import Hero from "../components/Hero.jsx";
 import FeaturedProducts from "../components/FeaturedProducts.jsx";
-import {useProducts} from "../contexts/ProductsContext.jsx";
+import { useProducts } from "../contexts/ProductsContext.jsx";
 import Highlights from "../components/Highlights.jsx";
 
 const Home = () => {
-  const {products, loading} = useProducts();
+  const { products, loading } = useProducts();
 
   return (
     <div className="bg-gray-100">

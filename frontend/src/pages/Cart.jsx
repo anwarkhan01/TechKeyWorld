@@ -1,43 +1,41 @@
-import {useMemo, useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
-import {Trash2, Plus, Minus, Truck} from "lucide-react";
-import {useCart} from "../contexts/CartContext.jsx";
-import {useAuth} from "../contexts/AuthContext.jsx";
+import { useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Trash2, Plus, Minus, Truck } from "lucide-react";
+import { useCart } from "../contexts/CartContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 import Toast from "../components/Toast.jsx";
 
 export default function Cart() {
-  const {cartItems, increaseQty, decreaseQty, removeFromCart, clearCart} =
+  const { cartItems, increaseQty, decreaseQty, removeFromCart, clearCart } =
     useCart();
-  const {user} = useAuth();
   const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
   const [toastData, setToastData] = useState({});
 
   const totals = useMemo(() => {
-    const subtotal = cartItems.reduce(
+    const subtotalMRP = cartItems.reduce(
+      (acc, it) => acc + (it.mrp || it.price) * (it.quantity || 1),
+      0
+    );
+
+    const subtotalPrice = cartItems.reduce(
       (acc, it) => acc + (it.price || 0) * (it.quantity || 1),
       0
     );
-    const shipping = subtotal >= 999 ? 0 : 99;
-    const discount = subtotal > 2000 ? 200 : 0;
-    const grandTotal = Math.max(0, subtotal - discount + shipping);
-    return {subtotal, discount, shipping, grandTotal};
+
+    return {
+      subtotalMRP,
+      discount: subtotalMRP - subtotalPrice,
+      grandTotal: subtotalPrice,
+    };
   }, [cartItems]);
 
-  const handleCheckoutClick = () => {
-    navigate("/checkout");
-  };
+  const handleCheckoutClick = () => navigate("/checkout");
 
-  const handleRemoveItem = (productId, name) => {
-    removeFromCart(productId);
-    setToastData({
-      message: `${name} removed from cart`,
-      type: "success",
-    });
+  const removeItem = (id, name) => {
+    removeFromCart(id);
+    setToastData({ message: `${name} removed`, type: "success" });
     setShowToast(true);
-  };
-  const handlePincodeSuccess = (pincode) => {
-    navigate("/checkout", {state: {pincode}});
   };
 
   return (
@@ -54,17 +52,18 @@ export default function Cart() {
             </Link>
           </div>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Left: Items */}
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Items */}
             <div className="lg:col-span-2 space-y-4">
               {cartItems.toReversed().map((it) => (
                 <div
                   key={it.product_id}
-                  className="flex gap-4 bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition"
+                  className="bg-white rounded-xl shadow-sm p-3 flex items-center gap-3"
                 >
+                  {/* Image */}
                   <Link
                     to={`/product/${it.product_id}`}
-                    className="block w-28 shrink-0 overflow-hidden rounded-lg bg-gray-100"
+                    className="w-24 h-24 rounded-lg overflow-hidden bg-gray-100 shrink-0"
                   >
                     <img
                       src={
@@ -72,35 +71,42 @@ export default function Cart() {
                       }
                       alt={it.product_name}
                       className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src =
-                          "https://placehold.co/600x400?text=Image+Not+Found";
-                      }}
                     />
                   </Link>
 
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div>
+                  {/* Middle content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start">
                       <Link
-                        to={`/product/${it.id}`}
-                        className="font-semibold text-gray-800 hover:text-blue-600 transition"
+                        to={`/product/${it.product_id}`}
+                        className="font-semibold text-gray-800 text-sm sm:text-base line-clamp-1"
                       >
                         {it.product_name}
                       </Link>
-                      {it.intro_description && (
-                        <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                          {it.intro_description}
-                        </p>
-                      )}
+
+                      {/* Mobile remove icon */}
+                      <button
+                        onClick={() =>
+                          removeItem(it.product_id, it.product_name)
+                        }
+                        className="p-2 rounded-md hover:bg-gray-100 text-red-500 sm:hidden"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </div>
 
-                    <div className="flex items-center justify-between mt-3">
-                      {/* Quantity controls */}
+                    {it.description && (
+                      <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+                        {it.description}
+                      </p>
+                    )}
+
+                    <div className="flex justify-between items-center mt-2">
+                      {/* Quantity */}
                       <div className="inline-flex items-center rounded-md border border-gray-300">
                         <button
                           onClick={() => decreaseQty(it.product_id)}
-                          className="px-2 py-1 hover:bg-gray-100"
+                          className="px-3 py-2 hover:bg-gray-100"
                         >
                           <Minus className="h-4 w-4 text-gray-600" />
                         </button>
@@ -109,22 +115,26 @@ export default function Cart() {
                         </span>
                         <button
                           onClick={() => increaseQty(it.product_id)}
-                          className="px-2 py-1 hover:bg-gray-100"
+                          className="px-3 py-2 hover:bg-gray-100"
                         >
                           <Plus className="h-4 w-4 text-gray-600" />
                         </button>
                       </div>
 
-                      {/* Price + Remove */}
+                      {/* Price + Desktop Remove */}
                       <div className="text-right">
-                        <p className="font-bold text-gray-800 text-sm">
+                        <p className="font-bold text-green-700 text-lg whitespace-nowrap">
                           ₹{it.price}
                         </p>
+                        <p className="text-xs text-gray-500 line-through whitespace-nowrap">
+                          ₹{it.mrp}
+                        </p>
+
                         <button
                           onClick={() =>
-                            handleRemoveItem(it.product_id, it.product_name)
+                            removeItem(it.product_id, it.product_name)
                           }
-                          className="text-xs cursor-pointer text-red-500 hover:text-red-700 mt-1 inline-flex items-center gap-1"
+                          className="hidden sm:inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 mt-1"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                           Remove
@@ -138,7 +148,7 @@ export default function Cart() {
               <div className="flex items-center justify-between mt-6">
                 <button
                   onClick={clearCart}
-                  className="rounded-md border border-gray-300 px-3 py-2 text-sm cursor-pointer hover:bg-gray-100"
+                  className="rounded-md border border-gray-300 px-3 py-2 text-sm hover:bg-gray-100"
                 >
                   Clear Cart
                 </button>
@@ -151,14 +161,14 @@ export default function Cart() {
               </div>
             </div>
 
-            {/* Right: Summary */}
+            {/* Summary */}
             <div className="bg-white rounded-xl shadow-md p-6 h-max">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
-                Order Summary
+              <h2 className="text-sm font-semibold text-gray-800 mb-4">
+                PRICE DETAILS
               </h2>
 
               {/* Product list */}
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 {cartItems.toReversed().map((item) => (
                   <div
                     key={item.product_id}
@@ -177,7 +187,7 @@ export default function Cart() {
                     </span>
                   </div>
                 ))}
-              </div>
+              </div> */}
 
               <hr className="my-4 border-gray-200" />
 
@@ -185,43 +195,35 @@ export default function Cart() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-500">Subtotal</span>
-                  <span className="font-medium">₹{totals.subtotal}</span>
+                  <span className="font-semibold">₹{totals.subtotalMRP}</span>
                 </div>
+
                 <div className="flex justify-between">
                   <span className="text-gray-500">Discount</span>
                   <span className="font-medium text-green-600">
                     -₹{totals.discount}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Shipping</span>
-                  <span className="font-medium">
-                    {totals.shipping === 0 ? "Free" : `₹${totals.shipping}`}
-                  </span>
-                </div>
+
                 <hr className="my-2 border-gray-200" />
+
                 <div className="flex justify-between text-base font-semibold">
                   <span>Total</span>
                   <span>₹{totals.grandTotal}</span>
                 </div>
               </div>
 
-              {/* Proceed to checkout */}
               <button
-                className="mt-6 w-full cursor-pointer bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
+                className="mt-6 w-full bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition"
                 onClick={handleCheckoutClick}
               >
                 Proceed to Checkout
               </button>
-
-              <p className="mt-3 text-center text-xs text-gray-500">
-                <Truck className="inline h-3.5 w-3.5 mr-1 text-gray-400" />
-                Free shipping on orders above ₹999
-              </p>
             </div>
           </div>
         )}
       </div>
+
       {showToast && (
         <Toast
           message={toastData.message}

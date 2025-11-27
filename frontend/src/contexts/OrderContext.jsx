@@ -1,10 +1,10 @@
-import {createContext, useContext, useEffect, useState} from "react";
-import {useAuth} from "./AuthContext";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
 
 const OrderContext = createContext();
 
-export const OrderProvider = ({children}) => {
-  const {user, mongoUser, loading} = useAuth();
+export const OrderProvider = ({ children }) => {
+  const { user, mongoUser, loading } = useAuth();
   const [isOrderProcessing, setIsOrderProcessing] = useState(false);
   const [orders, setOrders] = useState([]);
   const [orderLoading, setOrderLoading] = useState(false);
@@ -78,11 +78,14 @@ export const OrderProvider = ({children}) => {
 
       // Get PayU HTML form and render it
       const payuHtml = await resp.text();
-      document.open();
-      document.write(payuHtml);
-      document.close();
+      // document.open();
+      // document.write(payuHtml)
+      // document.close();
+      document.documentElement.innerHTML = payuHtml;
+      const form = document.querySelector("form");
+      if (form) form.submit();
 
-      return {success: true};
+      return { success: true };
     } catch (error) {
       console.error("Payment initiation error:", error);
       setIsOrderProcessing(false);
@@ -166,19 +169,21 @@ export const OrderProvider = ({children}) => {
     }
   };
 
-  const value = {
-    createOrder,
-    initiatePayment,
-    fetchOrders,
-    fetchOrderById,
-    isOrderProcessing,
-    orders,
-    orderLoading,
-    orderError,
-  };
-
   return (
-    <OrderContext.Provider value={value}>{children}</OrderContext.Provider>
+    <OrderContext.Provider
+      value={{
+        createOrder,
+        initiatePayment,
+        fetchOrders,
+        fetchOrderById,
+        isOrderProcessing,
+        orders,
+        orderLoading,
+        orderError,
+      }}
+    >
+      {children}
+    </OrderContext.Provider>
   );
 };
 

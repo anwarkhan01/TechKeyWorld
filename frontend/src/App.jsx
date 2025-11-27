@@ -1,4 +1,4 @@
-import {Routes, Route, Navigate} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Root from "./Root";
 import Home from "./pages/Home.jsx";
 import Products from "./pages/Products.jsx";
@@ -9,14 +9,14 @@ import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import Profile from "./pages/Profile.jsx";
 import CheckoutPage from "./pages/CheckOut.jsx";
-import {useAuth} from "./contexts/AuthContext.jsx";
+import { useAuth } from "./contexts/AuthContext.jsx";
 import Orders from "./pages/Orders.jsx";
 import OrderDetail from "./pages/OrderDetail.jsx";
 import PaymentSuccess from "./pages/payment/PaymentSuccess.jsx";
 import PaymentFailed from "./pages/payment/PaymentFailed.jsx";
 
-const ProtectedRoute = ({children}) => {
-  const {user, loading} = useAuth();
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -33,8 +33,8 @@ const ProtectedRoute = ({children}) => {
   return children;
 };
 
-const AuthRoute = ({children}) => {
-  const {user, loading} = useAuth();
+const AuthRoute = ({ children }) => {
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -42,10 +42,6 @@ const AuthRoute = ({children}) => {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
-  }
-
-  if (user) {
-    return <Navigate to="/profile" replace />;
   }
 
   return children;

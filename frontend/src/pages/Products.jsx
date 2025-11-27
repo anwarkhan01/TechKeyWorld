@@ -1,9 +1,15 @@
-import {useMemo, useState, useEffect} from "react";
-import {Frown, SlidersHorizontal, X, ArrowUpDown, Maximize} from "lucide-react";
-import SidebarFilter from "../components/SideBarFilter.jsx";
-import {useCart} from "../contexts/CartContext.jsx";
-import {useProducts} from "../contexts/ProductsContext.jsx";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
+import {
+  Frown,
+  SlidersHorizontal,
+  X,
+  ArrowUpDown,
+  Maximize,
+} from "lucide-react";
+// import SidebarFilter from "../components/SideBarFilter.jsx";
+import { useCart } from "../contexts/CartContext.jsx";
+import { useProducts } from "../contexts/ProductsContext.jsx";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard.jsx";
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,8 +22,8 @@ export default function Products() {
   const [categoryMaxPrice, setCategoryMaxPrice] = useState(500000);
   const [randomProducts, setRandomProducts] = useState([]);
   const [randomLoading, setRandomLoading] = useState(false);
-  const {addToCart} = useCart();
-  const {products, loading} = useProducts();
+  const { addToCart } = useCart();
+  const { products, loading } = useProducts();
   const navigate = useNavigate();
 
   const category = searchParams.get("category");
@@ -129,37 +135,37 @@ export default function Products() {
     computeDynamicFilters();
   }, [category, products, isSearchMode, isCategoryMode, maxPriceFromQuery]);
 
-  const handlePriceChange = (val) => {
-    const effectiveMax = Number.isFinite(categoryMaxPrice)
-      ? categoryMaxPrice
-      : 500000;
-    const parsed = Math.max(0, Math.min(Number(val) || 0, effectiveMax));
-    setPriceRange([0, parsed || effectiveMax]);
-    const params = new URLSearchParams(searchParams);
-    if (parsed === 0 || parsed >= effectiveMax) params.delete("maxPrice");
-    else params.set("maxPrice", parsed);
-    setSearchParams(params);
-  };
+  // const handlePriceChange = (val) => {
+  //   const effectiveMax = Number.isFinite(categoryMaxPrice)
+  //     ? categoryMaxPrice
+  //     : 500000;
+  //   const parsed = Math.max(0, Math.min(Number(val) || 0, effectiveMax));
+  //   setPriceRange([0, parsed || effectiveMax]);
+  //   const params = new URLSearchParams(searchParams);
+  //   if (parsed === 0 || parsed >= effectiveMax) params.delete("maxPrice");
+  //   else params.set("maxPrice", parsed);
+  //   setSearchParams(params);
+  // };
 
-  const handleBrandToggle = (brand) => {
-    const newBrands = selectedBrands.includes(brand)
-      ? selectedBrands.filter((b) => b !== brand)
-      : [...selectedBrands, brand];
-    const params = new URLSearchParams(searchParams);
-    newBrands.length
-      ? params.set("brand", newBrands.join(","))
-      : params.delete("brand");
-    navigate(`/products?${params.toString()}`, {replace: true});
-  };
+  // const handleBrandToggle = (brand) => {
+  //   const newBrands = selectedBrands.includes(brand)
+  //     ? selectedBrands.filter((b) => b !== brand)
+  //     : [...selectedBrands, brand];
+  //   const params = new URLSearchParams(searchParams);
+  //   newBrands.length
+  //     ? params.set("brand", newBrands.join(","))
+  //     : params.delete("brand");
+  //   navigate(`/products?${params.toString()}`, { replace: true });
+  // };
 
-  const clearFilters = () => {
-    setSelectedBrands([]);
-    setPriceRange([0, categoryMaxPrice]);
-    setSortBy("default");
-    const params = new URLSearchParams(searchParams);
-    ["brand", "minPrice", "maxPrice"].forEach((k) => params.delete(k));
-    setSearchParams(params);
-  };
+  // const clearFilters = () => {
+  //   setSelectedBrands([]);
+  //   setPriceRange([0, categoryMaxPrice]);
+  //   setSortBy("default");
+  //   const params = new URLSearchParams(searchParams);
+  //   ["brand", "minPrice", "maxPrice"].forEach((k) => params.delete(k));
+  //   setSearchParams(params);
+  // };
 
   const filteredProducts = useMemo(() => {
     let f = isDefaultMode ? [...randomProducts] : [...products];
@@ -204,7 +210,7 @@ export default function Products() {
                 ? `Search: “${decodeURIComponent(search)}”`
                 : isCategoryMode
                 ? category
-                : "Recommended Products"}
+                : "Products"}
             </h1>
             {isSearchMode && derivedCategories.length > 1 && (
               <div className="flex flex-wrap gap-2 mt-2">
@@ -225,12 +231,12 @@ export default function Products() {
 
           {/* Toolbar (mobile) */}
           <div className="flex lg:hidden gap-3">
-            <button
+            {/* <button
               onClick={() => setShowFilters(true)}
               className="p-2 rounded-full border border-gray-300 bg-white hover:bg-gray-100"
             >
               <SlidersHorizontal className="h-5 w-5 text-gray-700" />
-            </button>
+            </button> */}
             <button
               onClick={() => setShowSort(true)}
               className="p-2 rounded-full border border-gray-300 bg-white hover:bg-gray-100"
@@ -340,11 +346,11 @@ export default function Products() {
             <h3 className="text-lg font-semibold mb-3">Sort By</h3>
             <ul className="space-y-2 text-gray-700 text-sm">
               {[
-                {label: "Default", value: "default"},
-                {label: "Price: Low → High", value: "price-low"},
-                {label: "Price: High → Low", value: "price-high"},
-                {label: "Name: A → Z", value: "name"},
-              ].map(({label, value}) => (
+                { label: "Default", value: "default" },
+                { label: "Price: Low → High", value: "price-low" },
+                { label: "Price: High → Low", value: "price-high" },
+                { label: "Name: A → Z", value: "name" },
+              ].map(({ label, value }) => (
                 <li
                   key={value}
                   onClick={() => {

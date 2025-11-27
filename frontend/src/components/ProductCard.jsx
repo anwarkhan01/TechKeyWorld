@@ -1,8 +1,9 @@
 import {Clock, Users, Monitor, ShoppingCart} from "lucide-react";
-import {Link} from "react-router-dom";
+import {Link , useNavigate} from "react-router-dom";
 import {useCart} from "../contexts/CartContext.jsx";
-export default function ProductCard({product, idx, isDark, onAdd}) {
+export default function ProductCard({product, idx, isDark}) {
   const {addToCart} = useCart();
+  const navigate = useNavigate()
   const platforms = product.platform ? product.platform.split("|") : [];
 
   const discount =
@@ -11,8 +12,8 @@ export default function ProductCard({product, idx, isDark, onAdd}) {
       : 0;
 
   return (
-    <Link
-      to={`/product/${product.product_id}`}
+    <div
+      onClick={()=> navigate(`/product/${product.product_id}`)}
       className="group relative"
       style={{animationDelay: `${idx * 100}ms`}}
     >
@@ -128,12 +129,13 @@ export default function ProductCard({product, idx, isDark, onAdd}) {
             </div>
           </div>
 
-          {/* CTA */}
+          {/* CTA */} 
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              onAdd && onAdd(product);
+              addToCart(product);
+              navigate("/cart")
             }}
             disabled={product.stock_quantity === 0}
             className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold bg-gray-900 text-white hover:bg-black transition flex items-center justify-center gap-2 text-sm sm:text-base`}
@@ -165,6 +167,6 @@ export default function ProductCard({product, idx, isDark, onAdd}) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

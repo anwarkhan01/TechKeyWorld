@@ -1,16 +1,16 @@
-import {useParams, useNavigate, useLocation} from "react-router-dom";
-import {useOrder} from "../contexts/OrderContext.jsx";
-import {useAuth} from "../contexts/AuthContext.jsx";
-import {useProducts} from "../contexts/ProductsContext.jsx";
-import {ArrowLeft, CheckCircle, XCircle, Truck, Loader2} from "lucide-react";
-import {useState, useEffect} from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useOrder } from "../contexts/OrderContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
+import { useProducts } from "../contexts/ProductsContext.jsx";
+import { CheckCircle, XCircle, Truck, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const OrderDetail = () => {
-  const {orderId} = useParams();
+  const { orderId } = useParams();
   const navigate = useNavigate();
-  const {fetchOrderById} = useOrder();
-  const {getProductsByIds} = useProducts();
-  const {user} = useAuth();
+  const { fetchOrderById } = useOrder();
+  const { getProductsByIds } = useProducts();
+  const { user } = useAuth();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(!order);
   const [error, setError] = useState("");
@@ -44,7 +44,6 @@ const OrderDetail = () => {
 
     const loadOrder = async () => {
       const res = await fetchOrderById(orderId);
-      console.log("res", res);
       if (res.success) setOrder(res.data);
       setLoading(false);
     };
@@ -90,12 +89,14 @@ const OrderDetail = () => {
     delivered: <CheckCircle className="w-5 h-5 text-green-600" />,
     pending: <Truck className="w-5 h-5 text-yellow-600" />,
     cancelled: <XCircle className="w-5 h-5 text-red-600" />,
+    processing: <Truck className="w-5 h-5 text-blue-600" />,
   };
 
   const statusColors = {
     delivered: "text-green-700 bg-green-100",
     pending: "text-yellow-700 bg-yellow-100",
     cancelled: "text-red-700 bg-red-100",
+    processing: "text-blue-700 bg-blue-100",
   };
 
   const handleCancelOrder = async () => {

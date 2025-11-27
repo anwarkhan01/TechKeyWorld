@@ -1,13 +1,19 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {useOrder} from "../contexts/OrderContext.jsx";
-import {Loader2, CheckCircle, Truck, XCircle, ChevronRight} from "lucide-react";
-import {useAuth} from "../contexts/AuthContext.jsx";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useOrder } from "../contexts/OrderContext.jsx";
+import {
+  Loader2,
+  CheckCircle,
+  Truck,
+  XCircle,
+  ChevronRight,
+} from "lucide-react";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 const Orders = () => {
   const navigate = useNavigate();
-  const {fetchOrders, orders, orderLoading} = useOrder();
-  const {loading, user} = useAuth();
+  const { fetchOrders, orders, orderLoading } = useOrder();
+  const { loading, user } = useAuth();
   const [error, setError] = useState(null);
 
   useEffect(() => {

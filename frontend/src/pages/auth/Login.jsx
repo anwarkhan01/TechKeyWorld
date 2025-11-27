@@ -1,20 +1,21 @@
-import React, {useState} from "react";
-import {useAuth} from "../../contexts/AuthContext.jsx";
-import {User, Mail, Lock, Loader2, ArrowRight} from "lucide-react";
-import {FcGoogle} from "react-icons/fc";
-import {useNavigate, useLocation} from "react-router-dom";
+import React, { useState } from "react";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import { User, Mail, Lock, Loader2, ArrowRight } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
-  const {signInWithGoogle, loginWithEmail} = useAuth();
+  const { signInWithGoogle, loginWithEmail } = useAuth();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({email: "", password: ""});
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const {state} = useLocation();
+  const { state } = useLocation();
   let prevPage = state?.page;
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
+    setError("");
     try {
       await signInWithGoogle();
       if (prevPage === "/checkout") {
@@ -42,7 +43,7 @@ const Login = () => {
     setError("");
 
     try {
-      await loginWithEmail(formData.email, formData.password);
+      await loginWithEmail(formData.email.trim(), formData.password.trim());
       if (prevPage === "/checkout") {
         navigate("/checkout");
         return;
@@ -65,14 +66,14 @@ const Login = () => {
         setError(err.message || "Login failed. Please try again.");
       }
 
-      console.log("errrooorr", err);
+      console.log("failed to sign in with email/password", err);
     } finally {
       setLoading(false);
     }
   };
 
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value});
+    setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
   };
 

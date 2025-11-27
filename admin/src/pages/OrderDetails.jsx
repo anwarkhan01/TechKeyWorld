@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
-import {ArrowLeft} from "lucide-react";
-import {API_BASE, getStatusColor} from "../utils/api";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { API_BASE, getStatusColor } from "../utils/api";
 
 const OrderDetails = () => {
-  const {orderId} = useParams();
+  const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -90,14 +90,14 @@ const OrderDetails = () => {
           </span>
         </div>
 
-        {/* CUSTOMER / SHIPPING */}
+        {/* CUSTOMER / billing */}
         <div className="bg-gray-50 border rounded-xl p-5">
-          <h2 className="text-lg font-semibold mb-4">Customer & Shipping</h2>
+          <h2 className="text-lg font-semibold mb-4">Customer & billing</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
             <div className="space-y-1">
               <p className="text-gray-500 text-xs uppercase">Customer Name</p>
-              <p className="font-medium">{order.shipping.name}</p>
+              <p className="font-medium">{order.billingAddress.name}</p>
             </div>
 
             <div className="space-y-1">
@@ -107,18 +107,18 @@ const OrderDetails = () => {
 
             <div className="space-y-1">
               <p className="text-gray-500 text-xs uppercase">Phone</p>
-              <p>{order.shipping.phone}</p>
+              <p>{order.billingAddress.phone}</p>
             </div>
 
             <div className="space-y-1 col-span-full">
-              <p className="text-gray-500 text-xs uppercase">
-                Shipping Address
-              </p>
+              <p className="text-gray-500 text-xs uppercase">billing Address</p>
               <p className="leading-5">
-                {order.shipping.address}, {order.shipping.landmark}, <br />
-                {order.shipping.city}, {order.shipping.state},{" "}
-                {order.shipping.country} - {order.shipping.pincode}
+                {order.billingAddress.address}, {order.billingAddress.landmark},{" "}
+                <br />
+                {order.billingAddress.city}, {order.billingAddress.state},{" "}
+                {order.billingAddress.country} - {order.billingAddress.pincode}
               </p>
+              Address
             </div>
           </div>
         </div>
@@ -149,23 +149,9 @@ const OrderDetails = () => {
               <span>Subtotal</span>
               <span>₹{order.productData.totalPrice}</span>
             </p>
-            <p className="flex justify-between">
-              <span>Tax</span>
-              <span>₹{order.productData.tax}</span>
-            </p>
-            <p className="flex justify-between">
-              <span>Delivery</span>
-              <span>₹{order.productData.deliveryCharge}</span>
-            </p>
-
             <p className="flex justify-between font-semibold text-lg pt-2 border-t">
               <span>Total</span>
-              <span>
-                ₹
-                {order.productData.totalPrice +
-                  order.productData.tax +
-                  order.productData.deliveryCharge}
-              </span>
+              <span>₹{order.productData.totalPrice}</span>
             </p>
           </div>
         </div>
@@ -184,14 +170,14 @@ const OrderDetails = () => {
             </p> */}
 
             <p>
-              <span className="text-gray-500">Meta Created: </span>
+              <span className="text-gray-500">Created: </span>
               {new Date(order.meta.createdAt).toLocaleString()}
             </p>
 
-            <p>
+            {/* <p>
               <span className="text-gray-500">Updated At: </span>
               {new Date(order.updatedAt).toLocaleString()}
-            </p>
+            </p> */}
           </div>
         </div>
       </div>
@@ -209,7 +195,7 @@ const OrderDetails = () => {
               >
                 <div className="flex items-start gap-4">
                   <img
-                    src={item.image}
+                    src={item.image_url}
                     alt={item.product_name}
                     className="w-24 h-24 rounded-lg object-cover border"
                   />
