@@ -94,7 +94,6 @@ const Products = () => {
       });
 
       const data = await res.json();
-
       setUploadProgress({
         status: "success",
         message: `Uploaded ${data?.data?.successCount || 0} products`,

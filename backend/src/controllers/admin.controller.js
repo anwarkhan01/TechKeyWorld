@@ -5,7 +5,11 @@ import asyncHandler from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
 import ApiResponse from "../utils/ApiResponse.js";
 import Order from "../models/order.model.js";
-import xlsx from "xlsx";
+import XLSX from "xlsx";
+import generateKeywords from "../utils/keywordGenerator.js";
+import parsePipeArray from "../utils/parsePipeArray.js";
+import path from "path";
+import fs from "fs";
 
 const STATUS_MAP = {
   processing: "processing",
@@ -14,6 +18,84 @@ const STATUS_MAP = {
 };
 
 const normalize = (str) => String(str).trim().toLowerCase().replace(/\s+/g, "");
+
+const importProductsFromUpload = asyncHandler(async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return next(new ApiError(400, "Excel file required"));
+    }
+
+    const filePath = req.file.path;
+
+    const workbook = XLSX.readFile(filePath);
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data = XLSX.utils.sheet_to_json(sheet);
+
+    const filteredData = data.filter((item) =>
+      Object.values(item).some((v) => v !== undefined && v !== null && v !== "")
+    );
+
+    if (filteredData.length === 0) {
+      fs.unlinkSync(filePath);
+      return next(new ApiError(400, "Sheet contains no valid data"));
+    }
+
+    const bulkOps = filteredData.map((item) => {
+      const updateData = {
+        product_id: item.SKU || null,
+        product_name: item.Product_Name || "",
+        category: item.Category || "",
+        product_type: item.Product_Type || "",
+        platform: item.Platform || "",
+        version: item.Version ? String(item.Version) : "",
+        publisher: item.Publisher || "",
+        license_type: item.License_Type || "",
+        duration: item.Duration_Months ? String(item.Duration_Months) : "",
+        device_limit: Number(item.Device_Limit) || 0,
+        mrp: Number(item.MRP_INR) || 0,
+        price: Number(item.Selling_Price_INR) || 0,
+        description: item.Description || "",
+        features: parsePipeArray(item.Features),
+        system_requirements: parsePipeArray(item.System_Requirements),
+        image_url: item.Image_URL || "",
+        stock_quantity: Number(item.Stock_Quantity) || 0,
+        activation_steps: parsePipeArray(item.Activation_Steps),
+        status: item.Status || "active",
+        search_keywords: generateKeywords(
+          item.Product_Name,
+          item.Category,
+          item.Product_Type,
+          item.Platform,
+          item.Version,
+          item.Publisher
+        ),
+      };
+
+      return {
+        updateOne: {
+          filter: { product_id: updateData.product_id },
+          update: { $set: updateData },
+          upsert: true,
+        },
+      };
+    });
+
+    const batchSize = 100;
+    for (let i = 0; i < bulkOps.length; i += batchSize) {
+      const batch = bulkOps.slice(i, i + batchSize);
+      await Product.bulkWrite(batch, { ordered: false });
+    }
+
+    fs.unlinkSync(filePath);
+
+    return res.json(
+      new ApiResponse(200, `Imported/Updated ${filteredData.length} products`)
+    );
+  } catch (error) {
+    console.error("Import error:", error.message);
+    return next(new ApiError(500, "Error importing products", error.message));
+  }
+});
 
 const getAllOrders = asyncHandler(async (req, res) => {
   const {
@@ -502,4 +584,5 @@ export {
   bulkDeleteProducts,
   clearAllProducts,
   getDashboardStats,
+  importProductsFromUpload,
 };
