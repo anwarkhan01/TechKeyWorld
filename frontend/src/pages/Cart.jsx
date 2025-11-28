@@ -67,7 +67,8 @@ export default function Cart() {
                   >
                     <img
                       src={
-                        it.image || "https://placehold.co/300x300?text=No+Image"
+                        it.image_url ||
+                        "https://placehold.co/300x300?text=No+Image"
                       }
                       alt={it.product_name}
                       className="w-full h-full object-cover"

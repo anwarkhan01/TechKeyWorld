@@ -1,14 +1,15 @@
-import React, {useEffect, useState, useCallback} from "react";
-import {Eye, Search} from "lucide-react";
+import React, { useEffect, useState, useCallback } from "react";
+import { Eye, Search } from "lucide-react";
 import Pagination from "../components/Pagination";
-import {API_BASE} from "../utils/api";
-
+import { API_BASE } from "../utils/api";
+import { useNavigate } from "react-router-dom";
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -106,7 +107,10 @@ const Users = () => {
                       : "—"}
                   </td>
                   <td className="px-6 py-4">
-                    <button className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-1.5 text-gray-700 hover:border-gray-300">
+                    <button
+                      className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-3 py-1.5 text-gray-700 hover:border-gray-300"
+                      onClick={() => navigate(`/users/${user.firebaseUid}`)}
+                    >
                       <Eye size={16} />
                       View
                     </button>

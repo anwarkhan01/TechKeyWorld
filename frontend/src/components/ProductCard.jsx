@@ -1,11 +1,12 @@
-import {Clock, Users, Monitor, ShoppingCart} from "lucide-react";
-import {Link , useNavigate} from "react-router-dom";
-import {useCart} from "../contexts/CartContext.jsx";
-export default function ProductCard({product, idx, isDark}) {
-  const {addToCart} = useCart();
-  const navigate = useNavigate()
+import { Clock, Users, Monitor, ShoppingCart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../contexts/CartContext.jsx";
+export default function ProductCard({ product, idx, isDark }) {
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
   const platforms = product.platform ? product.platform.split("|") : [];
 
+  console.log(product);
   const discount =
     product.mrp && product.price
       ? Math.round(((product.mrp - product.price) / product.mrp) * 100)
@@ -13,9 +14,9 @@ export default function ProductCard({product, idx, isDark}) {
 
   return (
     <div
-      onClick={()=> navigate(`/product/${product.product_id}`)}
+      onClick={() => navigate(`/product/${product.product_id}`)}
       className="group relative"
-      style={{animationDelay: `${idx * 100}ms`}}
+      style={{ animationDelay: `${idx * 100}ms` }}
     >
       {/* Glow */}
       <div className="absolute -inset-1 bg-linear-to-r from-yellow-500/30 to-yellow-300/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-30 blur-xl transition duration-500" />
@@ -35,11 +36,11 @@ export default function ProductCard({product, idx, isDark}) {
           className="block bg-linear-to-br from-gray-50 to-gray-100 px-4 pt-4 pb-3"
         >
           <img
-            // src={
-            //   product.image_url ||
-            //   "https://placehold.co/600x400?text=Image+Not+Found"
-            // }
-            src={"https://placehold.co/600x400?text=Image+Not+Found"}
+            src={
+              product.image_url ||
+              "https://placehold.co/600x400?text=Image+Not+Found"
+            }
+            // src={"https://placehold.co/600x400?text=Image+Not+Found"}
             alt={product.product_name}
             className="w-full h-40 sm:h-44 object-contain transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
@@ -129,13 +130,13 @@ export default function ProductCard({product, idx, isDark}) {
             </div>
           </div>
 
-          {/* CTA */} 
+          {/* CTA */}
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
               addToCart(product);
-              navigate("/cart")
+              navigate("/cart");
             }}
             disabled={product.stock_quantity === 0}
             className={`w-full py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold bg-gray-900 text-white hover:bg-black transition flex items-center justify-center gap-2 text-sm sm:text-base`}

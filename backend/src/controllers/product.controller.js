@@ -200,11 +200,11 @@ const getFilterProducts = asyncHandler(async (req, res) => {
 
 const searchProducts = asyncHandler(async (req, res, next) => {
   const { q } = req.query;
+  console.log("data from product.controller.js", q);
   if (!q || q.trim() === "") {
     return next(new ApiError(400, "Search query is required"));
   }
 
-  // tokenize query
   const terms = q
     .toLowerCase()
     .split(/\s+/)
@@ -214,9 +214,13 @@ const searchProducts = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "Search query too short"));
   }
 
-  // match all tokens using search_keywords
+  // Create regex OR queries: /ms/i OR /office/i
+  const regexQueries = terms.map((t) => ({
+    search_keywords: { $regex: t, $options: "i" },
+  }));
+
   const products = await Product.find({
-    search_keywords: { $all: terms },
+    $and: regexQueries, // all terms must match (partial allowed)
   }).lean();
 
   res.json(

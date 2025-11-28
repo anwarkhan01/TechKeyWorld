@@ -1,18 +1,18 @@
-import {useState, useRef, useEffect} from "react";
-import {Link, useNavigate, useLocation} from "react-router-dom";
-import {useCart} from "../contexts/CartContext";
-import {useAuth} from "../contexts/AuthContext";
-import {CategoryBelt} from "./CategoryBelt.jsx";
-import {ShoppingCart, Menu, X, User, Search} from "lucide-react";
-import {motion, AnimatePresence} from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useCart } from "../contexts/CartContext";
+import { useAuth } from "../contexts/AuthContext";
+import { CategoryBelt } from "./CategoryBelt.jsx";
+import { ShoppingCart, Menu, X, User, Search } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const {cartItems} = useCart();
-  const {user} = useAuth();
+  const { cartItems } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const mobileMenuRef = useRef(null);
@@ -43,7 +43,7 @@ const Navbar = () => {
       }
     };
 
-    window.addEventListener("scroll", handleScroll, {passive: true});
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -82,7 +82,7 @@ const Navbar = () => {
               <img
                 src="/Techkey_logo.png"
                 alt="TechKey"
-                className="w-30 h-auto object-contain"
+                className="w-25 h-auto object-contain"
               />
             </Link>
 
@@ -160,7 +160,7 @@ const Navbar = () => {
               )}
 
               {/* Mobile Menu Toggle */}
-              <button
+              {/* <button
                 className="md:hidden text-gray-300 hover:text-blue-400 focus:outline-none transition-colors"
                 onClick={toggleMobileMenu}
                 aria-label="Toggle menu"
@@ -171,17 +171,17 @@ const Navbar = () => {
                 ) : (
                   <Menu className="w-6 h-6" />
                 )}
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
         <AnimatePresence>
           {showMobileSearch && (
             <motion.div
-              initial={{height: 0, opacity: 0}}
-              animate={{height: "auto", opacity: 1}}
-              exit={{height: 0, opacity: 0}}
-              transition={{duration: 0.2}}
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="md:hidden overflow-hidden pb-3"
             >
               <div>
@@ -222,10 +222,10 @@ const Navbar = () => {
         {isOpen && (
           <motion.div
             ref={mobileMenuRef}
-            initial={{height: 0, opacity: 0}}
-            animate={{height: "auto", opacity: 1}}
-            exit={{height: 0, opacity: 0}}
-            transition={{duration: 0.2}}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="fixed top-16 w-full md:hidden bg-gray-900 border-t border-gray-800 overflow-hidden z-40"
           >
             <div className="max-w-full px-4 py-3 space-y-2 max-h-[calc(100vh-4rem)] overflow-y-auto">

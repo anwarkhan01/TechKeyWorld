@@ -1,12 +1,12 @@
-import {Navigate, Route, Routes} from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import AdminRoot from "./AdminRoot.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Orders from "./pages/Orders.jsx";
 import OrderDetails from "./pages/OrderDetails.jsx";
 import Products from "./pages/Products.jsx";
 import Users from "./pages/Users.jsx";
-import {SidebarProvider} from "./contexts/SidebarContext";
-
+import { SidebarProvider } from "./contexts/SidebarContext";
+import UserDetail from "./pages/UserDetail.jsx";
 function App() {
   return (
     <SidebarProvider>
@@ -19,6 +19,7 @@ function App() {
           <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route path="/products" element={<Products />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:userId" element={<UserDetail />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -52,7 +52,7 @@ export default function ProductDetail() {
             <div className="relative rounded-2xl overflow-hidden bg-white shadow-sm">
               <img
                 src={
-                  images[activeImg] ||
+                  product.image_url ||
                   "https://placehold.co/600x400?text=Image+Not+Found"
                 }
                 alt={product.product_name}

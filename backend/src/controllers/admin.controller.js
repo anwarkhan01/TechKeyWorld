@@ -248,14 +248,15 @@ const getAllUsers = asyncHandler(async (req, res) => {
 
 const getUserById = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-
-  const user = await User.findById(userId).select("-password -refreshToken");
+  const user = await User.findOne({ firebaseUid: userId });
 
   if (!user) {
     throw new ApiError(404, "User not found");
   }
 
-  const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+  const orders = await Order.find({ firebaseUid: userId }).sort({
+    createdAt: -1,
+  });
 
   res.json(new ApiResponse(200, "User fetched successfully", { user, orders }));
 });

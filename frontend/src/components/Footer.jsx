@@ -1,4 +1,4 @@
-import React from "react";
+import { Phone, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -6,41 +6,50 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 py-10 grid gap-8 md:grid-cols-4">
         {/* Brand / About */}
         <div>
-          {/* <span className="inline-flex items-center mb-3"> */}
           <img
-            src="/Techkey_logo(croped).png"
-            alt="TeckKey"
-            className="w-25 h-auto object-contain"
+            src="/Techkey_logo.png"
+            alt="TechKey"
+            className="w-28 h-auto object-contain"
           />
-          {/* </span> */}
 
           <p className="text-sm leading-relaxed text-gray-400 mt-3">
-            Your trusted store for the latest electronics, gadgets, and
-            accessories. Quality and innovation delivered to your door.
+            Genuine digital license keys for Windows, Office, Antivirus,
+            security tools, and more. Instant delivery and trusted support.
           </p>
+
+          <div className="mt-4 space-y-2 text-sm">
+            <div className="flex items-center gap-2 text-gray-400">
+              <Phone size={16} />
+              <span className="text-gray-300">+91 88989 83398</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-gray-400">
+              <Mail size={16} />
+              <span className="text-gray-300">support@techkeyworld.com</span>
+            </div>
+          </div>
         </div>
 
-        {/* Shop Links */}
+        {/* Product Categories */}
         <div>
-          <h3 className="text-lg font-medium text-white mb-3">Shop</h3>
+          <h3 className="text-lg font-medium text-white mb-3">Products</h3>
           <ul className="space-y-2 text-sm">
-            <li className="hover:text-white cursor-pointer">Laptops</li>
-            <li className="hover:text-white cursor-pointer">Mobiles</li>
-            <li className="hover:text-white cursor-pointer">Accessories</li>
-            <li className="hover:text-white cursor-pointer">Gaming</li>
+            <li className="hover:text-white cursor-pointer">Windows Keys</li>
+            <li className="hover:text-white cursor-pointer">MS Office Keys</li>
+            <li className="hover:text-white cursor-pointer">Antivirus Keys</li>
           </ul>
         </div>
 
-        {/* Support Links */}
+        {/* Support */}
         <div>
           <h3 className="text-lg font-medium text-white mb-3">Support</h3>
           <ul className="space-y-2 text-sm">
-            <li className="hover:text-white cursor-pointer">Contact Us</li>
-            <li className="hover:text-white cursor-pointer">FAQs</li>
-            <li className="hover:text-white cursor-pointer">Warranty</li>
+            <li className="hover:text-white cursor-pointer">Contact Support</li>
             <li className="hover:text-white cursor-pointer">
-              Shipping & Returns
+              Activation Guide
             </li>
+            <li className="hover:text-white cursor-pointer">Refund Policy</li>
+            <li className="hover:text-white cursor-pointer">Order Help</li>
           </ul>
         </div>
 
@@ -48,7 +57,7 @@ const Footer = () => {
         <div>
           <h3 className="text-lg font-medium text-white mb-3">Stay Updated</h3>
           <p className="text-sm text-gray-400 mb-3">
-            Subscribe to get updates on new arrivals and exclusive offers.
+            Get updates on discounts, new keys, and exclusive offers.
           </p>
           <form className="flex">
             <input
@@ -66,7 +75,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Bottom bar */}
+      {/* Bottom */}
       <div className="border-t border-gray-800 mt-8">
         <p className="text-center text-gray-500 text-sm py-4">
           &copy; {new Date().getFullYear()} TechKey World. All rights reserved.
