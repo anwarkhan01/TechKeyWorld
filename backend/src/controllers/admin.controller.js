@@ -40,6 +40,24 @@ const importProductsFromUpload = asyncHandler(async (req, res, next) => {
       return next(new ApiError(400, "Sheet contains no valid data"));
     }
 
+    // system requirements → "Key: Value" array
+    const parseSystemRequirements = (val) => {
+      if (!val) return [];
+      return String(val)
+        .split(";")
+        .map((line) => line.trim())
+        .filter((line) => line && line.includes(":")); // keeps only key:value
+    };
+
+    // features + steps → split by semicolon
+    const parseSteps = (val) => {
+      if (!val) return [];
+      return String(val)
+        .split(";")
+        .map((line) => line.trim())
+        .filter(Boolean);
+    };
+
     const bulkOps = filteredData.map((item) => {
       const updateData = {
         product_id: item.SKU || null,
@@ -55,12 +73,17 @@ const importProductsFromUpload = asyncHandler(async (req, res, next) => {
         mrp: Number(item.MRP_INR) || 0,
         price: Number(item.Selling_Price_INR) || 0,
         description: item.Description || "",
-        features: parsePipeArray(item.Features),
-        system_requirements: parsePipeArray(item.System_Requirements),
+
+        // final correct parsing
+        features: parseSteps(item.Features),
+        system_requirements: parseSystemRequirements(item.System_Requirements),
+        activation_steps: parseSteps(item.Activation_Steps),
+
         image_url: item.Image_URL || "",
         stock_quantity: Number(item.Stock_Quantity) || 0,
-        activation_steps: parsePipeArray(item.Activation_Steps),
-        status: item.Status || "active",
+
+        status: item.Status ? String(item.Status).toLowerCase() : "active",
+
         search_keywords: generateKeywords(
           item.Product_Name,
           item.Category,

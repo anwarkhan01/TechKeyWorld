@@ -26,7 +26,7 @@ const CheckoutPage = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastData, setToastData] = useState({});
   const buyNowItemId = state?.buyNowItemId;
-  const buyNowQuantity = state?.buyNowQuantity ?? 1; // if product card sends quantity, backend can pass it via state
+  const buyNowQuantity = state?.buyNowQuantity ?? 1;
 
   const buyNowItem = useMemo(() => {
     if (!buyNowItemId) return null;
@@ -287,31 +287,31 @@ const CheckoutPage = () => {
     };
   };
 
-  const handlePlaceOrder = async () => {
-    if (!validateForm()) return;
+  // const handlePlaceOrder = async () => {
+  //   if (!validateForm()) return;
 
-    const payload = buildOrderPayload();
-    try {
-      setIsProcessing(true);
-      const result = await initiatePayment(payload);
-      if (!result.success) {
-        setToastData({
-          message: result.message || "Failed to initiate payment",
-          type: "error",
-        });
-        setShowToast(true);
-      }
+  //   const payload = buildOrderPayload();
+  //   try {
+  //     setIsProcessing(true);
+  //     const result = await initiatePayment(payload);
+  //     if (!result.success) {
+  //       setToastData({
+  //         message: result.message || "Failed to initiate payment",
+  //         type: "error",
+  //       });
+  //       setShowToast(true);
+  //     }
 
-      return;
-    } catch (error) {
-      setToastData({
-        message: "Something went wrong placing your order.",
-        type: "error",
-      });
-      setShowToast(true);
-      console.error(error);
-    }
-  };
+  //     return;
+  //   } catch (error) {
+  //     setToastData({
+  //       message: "Something went wrong placing your order.",
+  //       type: "error",
+  //     });
+  //     setShowToast(true);
+  //     console.error(error);
+  //   }
+  // };
   if (itemsToCheckout.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -669,44 +669,27 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              {/* <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">
-                    ₹{subtotal.toLocaleString("en-IN")}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Tax (18% GST)</span>
-                  <span className="text-gray-900">
-                    ₹{tax.toLocaleString("en-IN")}
-                  </span>
-                </div>
-              </div> */}
-
               <div className="border-t mt-4 pt-4">
                 <div className="flex justify-between items-center">
                   <span className="text-base sm:text-lg font-semibold text-gray-900">
                     Total
                   </span>
                   <span className="text-xl sm:text-2xl font-bold text-gray-900">
-                    {/* ₹{total.toLocaleString("en-IN")} */}₹
-                    {subtotal.toLocaleString("en-IN")}
+                    ₹{subtotal.toLocaleString("en-IN")}
                   </span>
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handlePlaceOrder}
-                disabled={isProcessing || !user}
-                className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed text-sm sm:text-base"
+              {/* Call for Booking */}
+              <a
+                href="tel:+917758073523"
+                className="block w-full mt-6 bg-blue-600 text-white text-center py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-sm sm:text-base"
               >
-                {isProcessing ? "Processing..." : "Place Order"}
-              </button>
+                Call to Book: +91 77580 73523
+              </a>
 
               <p className="text-xs text-gray-500 text-center mt-4">
-                By placing this order, you agree to our Terms & Conditions
+                For any queries or booking assistance, feel free to call.
               </p>
             </div>
           </div>

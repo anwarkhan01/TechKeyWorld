@@ -9,7 +9,7 @@ const Footer = () => {
           <img
             src="/Techkey_logo.png"
             alt="TechKey"
-            className="w-28 h-auto object-contain"
+            className="w-25 h-auto object-contain"
           />
 
           <p className="text-sm leading-relaxed text-gray-400 mt-3">
@@ -20,13 +20,15 @@ const Footer = () => {
           <div className="mt-4 space-y-2 text-sm">
             <div className="flex items-center gap-2 text-gray-400">
               <Phone size={16} />
-              <span className="text-gray-300">+91 88989 83398</span>
+              <a href="tel:+917758073523" className="text-gray-300">
+                +91 77580 73523
+              </a>
             </div>
 
-            <div className="flex items-center gap-2 text-gray-400">
+            {/* <div className="flex items-center gap-2 text-gray-400">
               <Mail size={16} />
               <span className="text-gray-300">support@techkeyworld.com</span>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -48,7 +50,6 @@ const Footer = () => {
             <li className="hover:text-white cursor-pointer">
               Activation Guide
             </li>
-            <li className="hover:text-white cursor-pointer">Refund Policy</li>
             <li className="hover:text-white cursor-pointer">Order Help</li>
           </ul>
         </div>

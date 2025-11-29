@@ -200,7 +200,6 @@ const getFilterProducts = asyncHandler(async (req, res) => {
 
 const searchProducts = asyncHandler(async (req, res, next) => {
   const { q } = req.query;
-  console.log("data from product.controller.js", q);
   if (!q || q.trim() === "") {
     return next(new ApiError(400, "Search query is required"));
   }

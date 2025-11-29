@@ -8,7 +8,7 @@ import {
   sendAdminOrderNotificationEmail,
 } from "../utils/orderEmailService.js";
 
-const cache = new Map();
+import { getRedis } from "../config/redis.js";
 
 const startPayU = asyncHandler(async (req, res) => {
   const { productData, contact } = req.body;
@@ -21,9 +21,10 @@ const startPayU = asyncHandler(async (req, res) => {
   const txnid = "PAYU_" + Math.floor(Math.random() * 45825666);
   const ref = crypto.randomBytes(8).toString("hex");
 
-  cache.set(ref, { productData, uid, contact });
-
-  setTimeout(() => cache.delete(ref), 20 * 60 * 1000);
+  const redis = await getRedis();
+  await redis.set(ref, JSON.stringify({ productData, uid, contact }), {
+    EX: 20 * 60,
+  });
 
   const paymentData = await CreateTransaction({
     txnid,
@@ -64,20 +65,24 @@ const payuSuccess = asyncHandler(async (req, res) => {
   }
 
   const ref = info.udf1;
-  const cached = cache.get(ref);
 
-  if (!cached) {
+  // fetch from redis
+  const redis = await getRedis();
+  const cachedStr = await redis.get(ref);
+  if (!cachedStr) {
     return res.redirect(`${process.env.FRONTEND_URL}/payment/payment-failed`);
   }
 
-  // Prevent duplicate order creation
+  const cached = JSON.parse(cachedStr);
+
+  // Prevent duplicate orders
   const existing = await Order.findOne({ txnId: info.txnid });
   if (existing) {
-    // User pressed back or PayU retried callback
     return res.redirect(`${process.env.FRONTEND_URL}/cart?alreadyPaid=true`);
   }
 
   const { productData, uid, contact } = cached;
+
   const orderId = crypto
     .randomBytes(12)
     .toString("hex")
@@ -99,7 +104,8 @@ const payuSuccess = asyncHandler(async (req, res) => {
     meta: { createdAt: new Date(), fromBuyNow: false },
   });
 
-  cache.delete(ref);
+  await redis.del(ref);
+
   try {
     await sendUserOrderConfirmationEmail(email, order);
   } catch (err) {

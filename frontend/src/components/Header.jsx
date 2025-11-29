@@ -73,7 +73,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-2 text-2xl font-extrabold tracking-tight hover:text-blue-400 transition-colors"
+              className=""
               onClick={() => {
                 setIsOpen(false);
                 setShowMobileSearch(false);

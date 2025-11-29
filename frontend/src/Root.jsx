@@ -1,8 +1,9 @@
-import {Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer.jsx";
 
 const Root = () => {
+  console.log("root renderred");
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

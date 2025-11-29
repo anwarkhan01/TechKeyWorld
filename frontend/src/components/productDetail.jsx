@@ -18,6 +18,7 @@ export default function ProductDetail() {
   );
   const [activeImg, setActiveImg] = useState(0);
 
+  console.log("ProductDetail Rendered");
   useEffect(() => {
     if (!product && !loading) {
       getProductsByIds([id]);
@@ -224,7 +225,9 @@ export default function ProductDetail() {
             {/* Stock */}
             <div className="text-sm text-gray-700">
               <span className="font-semibold">Stock:</span>{" "}
-              {product.stock_quantity} available
+              <span className="font-medium">
+                {product.stock_quantity} available
+              </span>
             </div>
           </div>
         </div>

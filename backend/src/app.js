@@ -1,14 +1,8 @@
 import express from "express";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
-import productRouter from "./routes/product.route.js";
-import authRouter from "./routes/auth.route.js";
-import adminRouter from "./routes/admin.route.js";
-import orderRouter from "./routes/order.route.js";
 import helmet from "helmet";
-import cartRouter from "./routes/cart.route.js";
 import ApiError from "./utils/ApiError.js";
-import paymentRouter from "./routes/payment.route.js";
 
 const app = express();
 
@@ -43,6 +37,13 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // app.use("/api/", limiter);
 // app.use("/api/auth/", authLimiter);
+
+import paymentRouter from "./routes/payment.route.js";
+import cartRouter from "./routes/cart.route.js";
+import productRouter from "./routes/product.route.js";
+import authRouter from "./routes/auth.route.js";
+import adminRouter from "./routes/admin.route.js";
+import orderRouter from "./routes/order.route.js";
 
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRouter);

@@ -6,7 +6,6 @@ export default function ProductCard({ product, idx, isDark }) {
   const navigate = useNavigate();
   const platforms = product.platform ? product.platform.split("|") : [];
 
-  console.log(product);
   const discount =
     product.mrp && product.price
       ? Math.round(((product.mrp - product.price) / product.mrp) * 100)

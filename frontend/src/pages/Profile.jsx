@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import {useAuth} from "../contexts/AuthContext.jsx";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext.jsx";
 import {
   Mail,
   Phone,
@@ -13,12 +13,12 @@ import {
   Package,
   ChevronRight,
 } from "lucide-react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Toast from "../components/Toast.jsx";
-import {useOrder} from "../contexts/OrderContext.jsx";
+import { useOrder } from "../contexts/OrderContext.jsx";
 
 const Profile = () => {
-  const {user, mongoUser, signOutWithGoogle} = useAuth();
+  const { user, mongoUser, signOutWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [isEditingAddress, setIsEditingAddress] = useState(false);
@@ -26,7 +26,7 @@ const Profile = () => {
   const [toastData, setToastData] = useState({});
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const {orders, orderLoading, error: orderError, fetchOrders} = useOrder();
+  const { orders, orderLoading, error: orderError, fetchOrders } = useOrder();
   const [addressData, setAddressData] = useState({
     fullAddress: "",
     landmark: "",
@@ -114,7 +114,7 @@ const Profile = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({phone}),
+          body: JSON.stringify({ phone }),
         }
       );
 
@@ -182,7 +182,7 @@ const Profile = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({address: addressData}),
+          body: JSON.stringify({ address: addressData }),
         }
       );
 
@@ -377,7 +377,10 @@ const Profile = () => {
                     type="text"
                     value={addressData.landmark}
                     onChange={(e) =>
-                      setAddressData({...addressData, landmark: e.target.value})
+                      setAddressData({
+                        ...addressData,
+                        landmark: e.target.value,
+                      })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     placeholder="Near Hospital, Mall, etc."
@@ -394,7 +397,7 @@ const Profile = () => {
                       type="text"
                       value={addressData.city}
                       onChange={(e) =>
-                        setAddressData({...addressData, city: e.target.value})
+                        setAddressData({ ...addressData, city: e.target.value })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       placeholder="Mumbai"
@@ -408,7 +411,10 @@ const Profile = () => {
                       type="text"
                       value={addressData.state}
                       onChange={(e) =>
-                        setAddressData({...addressData, state: e.target.value})
+                        setAddressData({
+                          ...addressData,
+                          state: e.target.value,
+                        })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                       placeholder="Maharashtra"
@@ -447,7 +453,7 @@ const Profile = () => {
                           const value = e.target.value
                             .replace(/\D/g, "")
                             .slice(0, 6);
-                          setAddressData({...addressData, pincode: value});
+                          setAddressData({ ...addressData, pincode: value });
                         }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm pr-8"
                         placeholder="400001"
@@ -515,7 +521,7 @@ const Profile = () => {
           </div>
         </div>
         {/* Order */}
-        <div className="bg-white rounded-xl shadow border border-gray-200 p-4 sm:p-6 mt-6">
+        {/* <div className="bg-white rounded-xl shadow border border-gray-200 p-4 sm:p-6 mt-6">
           <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             Recent Orders
           </h2>
@@ -605,7 +611,7 @@ const Profile = () => {
               </div>
             </>
           )}
-        </div>
+        </div> */}
       </div>
       {showToast && (
         <Toast
